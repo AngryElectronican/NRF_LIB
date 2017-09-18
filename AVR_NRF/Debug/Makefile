@@ -38,6 +38,7 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../main.c \
+../NRF.c \
 ../spi.c
 
 
@@ -49,18 +50,22 @@ ASM_SRCS +=
 
 OBJS +=  \
 main.o \
+NRF.o \
 spi.o
 
 OBJS_AS_ARGS +=  \
 main.o \
+NRF.o \
 spi.o
 
 C_DEPS +=  \
 main.d \
+NRF.d \
 spi.d
 
 C_DEPS_AS_ARGS +=  \
 main.d \
+NRF.d \
 spi.d
 
 OUTPUT_FILE_PATH +=AVR_NRF.elf
@@ -77,6 +82,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

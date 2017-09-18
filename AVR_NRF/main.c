@@ -8,22 +8,23 @@
 #include <avr/io.h>
 #include "spi.h"
 
-#define setBit(PORT,PIN) PORT|=(1<<PIN)
-#define cleBit(PORT,PIN) PORT&=~(1<<PIN)
-
 #define CN	PB3
-#define CSN	PB4
+#define CSN PB4
+
+#include "NRF.h"
+
+
 
 int main(void)
 {
-	uint8_t data=0;
+	uint8_t transmitAddress[5]={0xFF,0xFF,0xFF,0xFF,0xFF};
+	uint8_t returnedAddress[5]={0,0,0,0,0};
+	//uint8_t data=0;
 	DDRA=0xFF;
 	SPI_Init(CN,CSN);
-	cleBit(PORTB,CSN);
-	data=SPI_ReadWriteByte(0x00);
-	data=SPI_ReadWriteByte(0xFF);
-	setBit(PORTB,CSN);
-	PORTA=data;
+	writeRegNRF(0x10,transmitAddress,5);
+	readRegNRF(0x10,returnedAddress,5);
+	PORTA=returnedAddress[0];
 	
     while (1) 
     {

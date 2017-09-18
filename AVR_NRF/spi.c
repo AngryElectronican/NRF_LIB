@@ -4,7 +4,7 @@
  * Created: 15.09.2017 23:13:55
  *  Author: ANGRY_ELECTRONICAN
  */ 
-#include <avr/io.h>
+
 #include "spi.h"
 
 void SPI_Init(uint8_t CE, uint8_t CSN){
