@@ -127,6 +127,9 @@
     <Compile Include="NRF.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="regNRF.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="spi.c">
       <SubType>compile</SubType>
     </Compile>

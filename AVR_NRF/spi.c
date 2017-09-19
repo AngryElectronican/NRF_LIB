@@ -7,9 +7,9 @@
 
 #include "spi.h"
 
-void SPI_Init(uint8_t CE, uint8_t CSN){
-	DDRB=(1<<CE)|(1<<CSN)|(1<<PB5)|(1<<PB7);
-	PORTB|=(1<<CSN);
+void SPI_Init(uint8_t CE_pin, uint8_t CSN_pin){
+	DDRB=(1<<CE_pin)|(1<<CSN_pin)|(1<<PB5)|(1<<PB7);
+	PORTB|=(1<<CSN_pin);
 	SPCR=(1<<SPE)|(1<<MSTR)|(1<<SPR1)|(1<<SPR0);
 	
 }

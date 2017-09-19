@@ -6,13 +6,8 @@
  */ 
 
 #include <avr/io.h>
-#include "spi.h"
-
-#define CN	PB3
-#define CSN PB4
-
+//#include "spi.h"
 #include "NRF.h"
-
 
 
 int main(void)
@@ -21,9 +16,8 @@ int main(void)
 	uint8_t returnedAddress[5]={0,0,0,0,0};
 	//uint8_t data=0;
 	DDRA=0xFF;
-	SPI_Init(CN,CSN);
-	writeRegNRF(0x10,transmitAddress,5);
-	readRegNRF(0x10,returnedAddress,5);
+	NRF_Init();
+	readRegNRF(CONFIG,returnedAddress,1);
 	PORTA=returnedAddress[0];
 	
     while (1) 
