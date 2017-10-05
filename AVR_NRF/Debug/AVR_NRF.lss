@@ -3,29 +3,29 @@ AVR_NRF.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000188  00000000  00000000  00000054  2**1
+  0 .text         000002c4  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000001dc  2**0
+  1 .data         00000000  00800060  00800060  00000318  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  000001dc  2**0
+  2 .comment      00000030  00000000  00000000  00000318  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  0000020c  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000348  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000080  00000000  00000000  00000248  2**0
+  4 .debug_aranges 000000b8  00000000  00000000  00000384  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000009c8  00000000  00000000  000002c8  2**0
+  5 .debug_info   00000fb2  00000000  00000000  0000043c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000007cd  00000000  00000000  00000c90  2**0
+  6 .debug_abbrev 00000879  00000000  00000000  000013ee  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000042a  00000000  00000000  0000145d  2**0
+  7 .debug_line   0000065a  00000000  00000000  00001c67  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000108  00000000  00000000  00001888  2**2
+  8 .debug_frame  000001f0  00000000  00000000  000022c4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003e5  00000000  00000000  00001990  2**0
+  9 .debug_str    0000052f  00000000  00000000  000024b4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000326  00000000  00000000  00001d75  2**0
+ 10 .debug_loc    000005fa  00000000  00000000  000029e3  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000050  00000000  00000000  0000209b  2**0
+ 11 .debug_ranges 00000088  00000000  00000000  00002fdd  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -61,14 +61,14 @@ Disassembly of section .text:
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
   60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
-  64:	0c 94 c2 00 	jmp	0x184	; 0x184 <_exit>
+  64:	0c 94 60 01 	jmp	0x2c0	; 0x2c0 <_exit>
 
 00000068 <__bad_interrupt>:
   68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 0000006c <main>:
-//#include "spi.h"
 #include "NRF.h"
+#include <util/delay.h>
 
 
 int main(void)
@@ -76,213 +76,387 @@ int main(void)
   6c:	cf 93       	push	r28
   6e:	df 93       	push	r29
   70:	00 d0       	rcall	.+0      	; 0x72 <main+0x6>
-  72:	00 d0       	rcall	.+0      	; 0x74 <main+0x8>
-  74:	1f 92       	push	r1
-  76:	cd b7       	in	r28, 0x3d	; 61
-  78:	de b7       	in	r29, 0x3e	; 62
-	uint8_t transmitAddress[5]={0xFF,0xFF,0xFF,0xFF,0xFF};
-	uint8_t returnedAddress[5]={0,0,0,0,0};
-  7a:	8e 01       	movw	r16, r28
-  7c:	0f 5f       	subi	r16, 0xFF	; 255
-  7e:	1f 4f       	sbci	r17, 0xFF	; 255
-  80:	85 e0       	ldi	r24, 0x05	; 5
-  82:	f8 01       	movw	r30, r16
-  84:	11 92       	st	Z+, r1
-  86:	8a 95       	dec	r24
-  88:	e9 f7       	brne	.-6      	; 0x84 <main+0x18>
-	//uint8_t data=0;
+  72:	cd b7       	in	r28, 0x3d	; 61
+  74:	de b7       	in	r29, 0x3e	; 62
+	uint8_t transmit[1]={0xAA};
+  76:	8a ea       	ldi	r24, 0xAA	; 170
+  78:	89 83       	std	Y+1, r24	; 0x01
+	uint8_t data=0;
+  7a:	1a 82       	std	Y+2, r1	; 0x02
 	DDRA=0xFF;
-  8a:	8f ef       	ldi	r24, 0xFF	; 255
-  8c:	8a bb       	out	0x1a, r24	; 26
+  7c:	8f ef       	ldi	r24, 0xFF	; 255
+  7e:	8a bb       	out	0x1a, r24	; 26
 	NRF_Init();
-  8e:	0e 94 8f 00 	call	0x11e	; 0x11e <NRF_Init>
-	readRegNRF(CONFIG,returnedAddress,1);
-  92:	41 e0       	ldi	r20, 0x01	; 1
-  94:	b8 01       	movw	r22, r16
-  96:	80 e0       	ldi	r24, 0x00	; 0
-  98:	0e 94 51 00 	call	0xa2	; 0xa2 <readRegNRF>
-	PORTA=returnedAddress[0];
-  9c:	89 81       	ldd	r24, Y+1	; 0x01
-  9e:	8b bb       	out	0x1b, r24	; 27
-	
-    while (1) 
-    {
+  80:	0e 94 95 00 	call	0x12a	; 0x12a <NRF_Init>
+	NRF_OpenPipe(0,1);
+  84:	61 e0       	ldi	r22, 0x01	; 1
+  86:	80 e0       	ldi	r24, 0x00	; 0
+  88:	0e 94 33 01 	call	0x266	; 0x266 <NRF_OpenPipe>
+	NRF_PowerOn();
+  8c:	0e 94 ac 00 	call	0x158	; 0x158 <NRF_PowerOn>
+	NRF_TransmitMode();
+  90:	0e 94 cd 00 	call	0x19a	; 0x19a <NRF_TransmitMode>
+	NRF_WritePLD(transmit,1);
+  94:	61 e0       	ldi	r22, 0x01	; 1
+  96:	ce 01       	movw	r24, r28
+  98:	01 96       	adiw	r24, 0x01	; 1
+  9a:	0e 94 ec 00 	call	0x1d8	; 0x1d8 <NRF_WritePLD>
+	NRF_WriteData();
+  9e:	0e 94 09 01 	call	0x212	; 0x212 <NRF_WriteData>
+	NRF_ReadReg(STATUS,&data,1);
+  a2:	41 e0       	ldi	r20, 0x01	; 1
+  a4:	be 01       	movw	r22, r28
+  a6:	6e 5f       	subi	r22, 0xFE	; 254
+  a8:	7f 4f       	sbci	r23, 0xFF	; 255
+  aa:	87 e0       	ldi	r24, 0x07	; 7
+  ac:	0e 94 5b 00 	call	0xb6	; 0xb6 <NRF_ReadReg>
+	PORTA=data;
+  b0:	8a 81       	ldd	r24, Y+2	; 0x02
+  b2:	8b bb       	out	0x1b, r24	; 27
+		//NRF_WritePLD(transmit,1);
+		//NRF_WriteData();
+		//NRF_ReceiveMode();
+		
 		
     }
-  a0:	ff cf       	rjmp	.-2      	; 0xa0 <main+0x34>
+  b4:	ff cf       	rjmp	.-2      	; 0xb4 <main+0x48>
 
-000000a2 <readRegNRF>:
- */ 
-#include "NRF.h"
-#include "spi.h"
-
-
-void readRegNRF(uint8_t addr,uint8_t *buffer,uint8_t size){
-  a2:	ff 92       	push	r15
-  a4:	0f 93       	push	r16
-  a6:	1f 93       	push	r17
-  a8:	cf 93       	push	r28
-  aa:	df 93       	push	r29
-  ac:	8b 01       	movw	r16, r22
-  ae:	f4 2e       	mov	r15, r20
-	cleBit(PORTB,CSN);
-  b0:	c4 98       	cbi	0x18, 4	; 24
-	SPI_ReadWriteByte(addr);
-  b2:	0e 94 bd 00 	call	0x17a	; 0x17a <SPI_ReadWriteByte>
-	for(int i=0;i<size;i++){
-  b6:	ff 20       	and	r15, r15
-  b8:	51 f0       	breq	.+20     	; 0xce <readRegNRF+0x2c>
-  ba:	e8 01       	movw	r28, r16
-  bc:	0f 0d       	add	r16, r15
-  be:	11 1d       	adc	r17, r1
-	buffer[i]=SPI_ReadWriteByte(0xFF);
-  c0:	8f ef       	ldi	r24, 0xFF	; 255
-  c2:	0e 94 bd 00 	call	0x17a	; 0x17a <SPI_ReadWriteByte>
-  c6:	89 93       	st	Y+, r24
-
-
-void readRegNRF(uint8_t addr,uint8_t *buffer,uint8_t size){
-	cleBit(PORTB,CSN);
-	SPI_ReadWriteByte(addr);
-	for(int i=0;i<size;i++){
-  c8:	c0 17       	cp	r28, r16
-  ca:	d1 07       	cpc	r29, r17
-  cc:	c9 f7       	brne	.-14     	; 0xc0 <readRegNRF+0x1e>
-	buffer[i]=SPI_ReadWriteByte(0xFF);
-	}
-	setBit(PORTB,CSN);
-  ce:	c4 9a       	sbi	0x18, 4	; 24
+000000b6 <NRF_ReadReg>:
+	NRF_ReadReg(CONFIG,&value,1);
+	value|=(1<<PRIM_RX);
+	NRF_WriteReg(CONFIG,&value,1);
+	setBit(PORTB,CE);
+	_delay_us(135);
 }
-  d0:	df 91       	pop	r29
-  d2:	cf 91       	pop	r28
-  d4:	1f 91       	pop	r17
-  d6:	0f 91       	pop	r16
-  d8:	ff 90       	pop	r15
-  da:	08 95       	ret
+  b6:	ff 92       	push	r15
+  b8:	0f 93       	push	r16
+  ba:	1f 93       	push	r17
+  bc:	cf 93       	push	r28
+  be:	df 93       	push	r29
+  c0:	8b 01       	movw	r16, r22
+  c2:	f4 2e       	mov	r15, r20
+  c4:	c4 98       	cbi	0x18, 4	; 24
+  c6:	0e 94 5b 01 	call	0x2b6	; 0x2b6 <SPI_ReadWriteByte>
+  ca:	ff 20       	and	r15, r15
+  cc:	51 f0       	breq	.+20     	; 0xe2 <NRF_ReadReg+0x2c>
+  ce:	e8 01       	movw	r28, r16
+  d0:	0f 0d       	add	r16, r15
+  d2:	11 1d       	adc	r17, r1
+  d4:	8f ef       	ldi	r24, 0xFF	; 255
+  d6:	0e 94 5b 01 	call	0x2b6	; 0x2b6 <SPI_ReadWriteByte>
+  da:	89 93       	st	Y+, r24
+  dc:	c0 17       	cp	r28, r16
+  de:	d1 07       	cpc	r29, r17
+  e0:	c9 f7       	brne	.-14     	; 0xd4 <NRF_ReadReg+0x1e>
+  e2:	c4 9a       	sbi	0x18, 4	; 24
+  e4:	df 91       	pop	r29
+  e6:	cf 91       	pop	r28
+  e8:	1f 91       	pop	r17
+  ea:	0f 91       	pop	r16
+  ec:	ff 90       	pop	r15
+  ee:	08 95       	ret
 
-000000dc <writeRegNRF>:
-uint8_t writeRegNRF(uint8_t addr,uint8_t *value,uint8_t num){
-  dc:	ef 92       	push	r14
-  de:	ff 92       	push	r15
-  e0:	0f 93       	push	r16
-  e2:	1f 93       	push	r17
-  e4:	cf 93       	push	r28
-  e6:	df 93       	push	r29
-  e8:	8b 01       	movw	r16, r22
-  ea:	f4 2e       	mov	r15, r20
-	uint8_t receive=0;
-	cleBit(PORTB,CSN);
-  ec:	c4 98       	cbi	0x18, 4	; 24
-	receive=SPI_ReadWriteByte(addr|0x20);
-  ee:	80 62       	ori	r24, 0x20	; 32
-  f0:	0e 94 bd 00 	call	0x17a	; 0x17a <SPI_ReadWriteByte>
-  f4:	e8 2e       	mov	r14, r24
-	for(int i=0;i<num;i++){
-  f6:	ff 20       	and	r15, r15
-  f8:	49 f0       	breq	.+18     	; 0x10c <writeRegNRF+0x30>
-  fa:	e8 01       	movw	r28, r16
-  fc:	0f 0d       	add	r16, r15
-  fe:	11 1d       	adc	r17, r1
-		SPI_ReadWriteByte(value[i]);
- 100:	89 91       	ld	r24, Y+
- 102:	0e 94 bd 00 	call	0x17a	; 0x17a <SPI_ReadWriteByte>
-}
-uint8_t writeRegNRF(uint8_t addr,uint8_t *value,uint8_t num){
-	uint8_t receive=0;
-	cleBit(PORTB,CSN);
-	receive=SPI_ReadWriteByte(addr|0x20);
-	for(int i=0;i<num;i++){
- 106:	c0 17       	cp	r28, r16
- 108:	d1 07       	cpc	r29, r17
- 10a:	d1 f7       	brne	.-12     	; 0x100 <writeRegNRF+0x24>
-		SPI_ReadWriteByte(value[i]);
-	}
-	setBit(PORTB,CSN);
- 10c:	c4 9a       	sbi	0x18, 4	; 24
-	return receive;	
-}
- 10e:	8e 2d       	mov	r24, r14
- 110:	df 91       	pop	r29
- 112:	cf 91       	pop	r28
- 114:	1f 91       	pop	r17
- 116:	0f 91       	pop	r16
- 118:	ff 90       	pop	r15
- 11a:	ef 90       	pop	r14
- 11c:	08 95       	ret
+000000f0 <NRF_WriteReg>:
+  f0:	ff 92       	push	r15
+  f2:	0f 93       	push	r16
+  f4:	1f 93       	push	r17
+  f6:	cf 93       	push	r28
+  f8:	df 93       	push	r29
+  fa:	8b 01       	movw	r16, r22
+  fc:	f4 2e       	mov	r15, r20
+  fe:	c4 98       	cbi	0x18, 4	; 24
+ 100:	80 62       	ori	r24, 0x20	; 32
+ 102:	0e 94 5b 01 	call	0x2b6	; 0x2b6 <SPI_ReadWriteByte>
+ 106:	ff 20       	and	r15, r15
+ 108:	49 f0       	breq	.+18     	; 0x11c <NRF_WriteReg+0x2c>
+ 10a:	e8 01       	movw	r28, r16
+ 10c:	0f 0d       	add	r16, r15
+ 10e:	11 1d       	adc	r17, r1
+ 110:	89 91       	ld	r24, Y+
+ 112:	0e 94 5b 01 	call	0x2b6	; 0x2b6 <SPI_ReadWriteByte>
+ 116:	c0 17       	cp	r28, r16
+ 118:	d1 07       	cpc	r29, r17
+ 11a:	d1 f7       	brne	.-12     	; 0x110 <NRF_WriteReg+0x20>
+ 11c:	c4 9a       	sbi	0x18, 4	; 24
+ 11e:	df 91       	pop	r29
+ 120:	cf 91       	pop	r28
+ 122:	1f 91       	pop	r17
+ 124:	0f 91       	pop	r16
+ 126:	ff 90       	pop	r15
+ 128:	08 95       	ret
 
-0000011e <NRF_Init>:
-void NRF_Init(void){
- 11e:	cf 93       	push	r28
- 120:	df 93       	push	r29
- 122:	1f 92       	push	r1
- 124:	cd b7       	in	r28, 0x3d	; 61
- 126:	de b7       	in	r29, 0x3e	; 62
-	uint8_t startup[]={0x0A};
- 128:	8a e0       	ldi	r24, 0x0A	; 10
- 12a:	89 83       	std	Y+1, r24	; 0x01
-	SPI_Init(CE,CSN);
- 12c:	64 e0       	ldi	r22, 0x04	; 4
- 12e:	83 e0       	ldi	r24, 0x03	; 3
- 130:	0e 94 a6 00 	call	0x14c	; 0x14c <SPI_Init>
+0000012a <NRF_Init>:
+ 12a:	cf 93       	push	r28
+ 12c:	df 93       	push	r29
+ 12e:	1f 92       	push	r1
+ 130:	cd b7       	in	r28, 0x3d	; 61
+ 132:	de b7       	in	r29, 0x3e	; 62
+ 134:	88 e0       	ldi	r24, 0x08	; 8
+ 136:	89 83       	std	Y+1, r24	; 0x01
+ 138:	64 e0       	ldi	r22, 0x04	; 4
+ 13a:	83 e0       	ldi	r24, 0x03	; 3
+ 13c:	0e 94 44 01 	call	0x288	; 0x288 <SPI_Init>
+ 140:	c3 98       	cbi	0x18, 3	; 24
+ 142:	41 e0       	ldi	r20, 0x01	; 1
+ 144:	be 01       	movw	r22, r28
+ 146:	6f 5f       	subi	r22, 0xFF	; 255
+ 148:	7f 4f       	sbci	r23, 0xFF	; 255
+ 14a:	80 e0       	ldi	r24, 0x00	; 0
+ 14c:	0e 94 78 00 	call	0xf0	; 0xf0 <NRF_WriteReg>
+ 150:	0f 90       	pop	r0
+ 152:	df 91       	pop	r29
+ 154:	cf 91       	pop	r28
+ 156:	08 95       	ret
+
+00000158 <NRF_PowerOn>:
+ 158:	cf 93       	push	r28
+ 15a:	df 93       	push	r29
+ 15c:	1f 92       	push	r1
+ 15e:	cd b7       	in	r28, 0x3d	; 61
+ 160:	de b7       	in	r29, 0x3e	; 62
+ 162:	19 82       	std	Y+1, r1	; 0x01
+ 164:	41 e0       	ldi	r20, 0x01	; 1
+ 166:	be 01       	movw	r22, r28
+ 168:	6f 5f       	subi	r22, 0xFF	; 255
+ 16a:	7f 4f       	sbci	r23, 0xFF	; 255
+ 16c:	80 e0       	ldi	r24, 0x00	; 0
+ 16e:	0e 94 5b 00 	call	0xb6	; 0xb6 <NRF_ReadReg>
+ 172:	89 81       	ldd	r24, Y+1	; 0x01
+ 174:	82 60       	ori	r24, 0x02	; 2
+ 176:	89 83       	std	Y+1, r24	; 0x01
+ 178:	41 e0       	ldi	r20, 0x01	; 1
+ 17a:	be 01       	movw	r22, r28
+ 17c:	6f 5f       	subi	r22, 0xFF	; 255
+ 17e:	7f 4f       	sbci	r23, 0xFF	; 255
+ 180:	80 e0       	ldi	r24, 0x00	; 0
+ 182:	0e 94 78 00 	call	0xf0	; 0xf0 <NRF_WriteReg>
+ 186:	83 ef       	ldi	r24, 0xF3	; 243
+ 188:	91 e0       	ldi	r25, 0x01	; 1
+ 18a:	01 97       	sbiw	r24, 0x01	; 1
+ 18c:	f1 f7       	brne	.-4      	; 0x18a <NRF_PowerOn+0x32>
+ 18e:	00 c0       	rjmp	.+0      	; 0x190 <NRF_PowerOn+0x38>
+ 190:	00 00       	nop
+ 192:	0f 90       	pop	r0
+ 194:	df 91       	pop	r29
+ 196:	cf 91       	pop	r28
+ 198:	08 95       	ret
+
+0000019a <NRF_TransmitMode>:
+void NRF_TransmitMode(){
+ 19a:	cf 93       	push	r28
+ 19c:	df 93       	push	r29
+ 19e:	1f 92       	push	r1
+ 1a0:	cd b7       	in	r28, 0x3d	; 61
+ 1a2:	de b7       	in	r29, 0x3e	; 62
+	uint8_t value=0;
+ 1a4:	19 82       	std	Y+1, r1	; 0x01
+	NRF_ReadReg(CONFIG,&value,1);
+ 1a6:	41 e0       	ldi	r20, 0x01	; 1
+ 1a8:	be 01       	movw	r22, r28
+ 1aa:	6f 5f       	subi	r22, 0xFF	; 255
+ 1ac:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1ae:	80 e0       	ldi	r24, 0x00	; 0
+ 1b0:	0e 94 5b 00 	call	0xb6	; 0xb6 <NRF_ReadReg>
+	value&=~(1<<PRIM_RX);
+ 1b4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1b6:	8e 7f       	andi	r24, 0xFE	; 254
+ 1b8:	89 83       	std	Y+1, r24	; 0x01
+	NRF_WriteReg(CONFIG,&value,1);
+ 1ba:	41 e0       	ldi	r20, 0x01	; 1
+ 1bc:	be 01       	movw	r22, r28
+ 1be:	6f 5f       	subi	r22, 0xFF	; 255
+ 1c0:	7f 4f       	sbci	r23, 0xFF	; 255
+ 1c2:	80 e0       	ldi	r24, 0x00	; 0
+ 1c4:	0e 94 78 00 	call	0xf0	; 0xf0 <NRF_WriteReg>
 	cleBit(PORTB,CE);
- 134:	c3 98       	cbi	0x18, 3	; 24
-	writeRegNRF(CONFIG,startup,1);
- 136:	41 e0       	ldi	r20, 0x01	; 1
- 138:	be 01       	movw	r22, r28
- 13a:	6f 5f       	subi	r22, 0xFF	; 255
- 13c:	7f 4f       	sbci	r23, 0xFF	; 255
- 13e:	80 e0       	ldi	r24, 0x00	; 0
- 140:	0e 94 6e 00 	call	0xdc	; 0xdc <writeRegNRF>
- 144:	0f 90       	pop	r0
- 146:	df 91       	pop	r29
- 148:	cf 91       	pop	r28
- 14a:	08 95       	ret
+ 1c8:	c3 98       	cbi	0x18, 3	; 24
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
 
-0000014c <SPI_Init>:
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 1ca:	8d e2       	ldi	r24, 0x2D	; 45
+ 1cc:	8a 95       	dec	r24
+ 1ce:	f1 f7       	brne	.-4      	; 0x1cc <NRF_TransmitMode+0x32>
+	_delay_us(135);
+}
+ 1d0:	0f 90       	pop	r0
+ 1d2:	df 91       	pop	r29
+ 1d4:	cf 91       	pop	r28
+ 1d6:	08 95       	ret
+
+000001d8 <NRF_WritePLD>:
+void NRF_WritePLD(uint8_t *buf,uint8_t size){
+ 1d8:	ff 92       	push	r15
+ 1da:	0f 93       	push	r16
+ 1dc:	1f 93       	push	r17
+ 1de:	cf 93       	push	r28
+ 1e0:	df 93       	push	r29
+ 1e2:	8c 01       	movw	r16, r24
+ 1e4:	f6 2e       	mov	r15, r22
+	cleBit(PORTB,CSN);
+ 1e6:	c4 98       	cbi	0x18, 4	; 24
+	SPI_ReadWriteByte(W_TX_PAYLOAD);
+ 1e8:	80 ea       	ldi	r24, 0xA0	; 160
+ 1ea:	0e 94 5b 01 	call	0x2b6	; 0x2b6 <SPI_ReadWriteByte>
+	for(int i=0; i<size;i++){
+ 1ee:	ff 20       	and	r15, r15
+ 1f0:	49 f0       	breq	.+18     	; 0x204 <NRF_WritePLD+0x2c>
+ 1f2:	e8 01       	movw	r28, r16
+ 1f4:	0f 0d       	add	r16, r15
+ 1f6:	11 1d       	adc	r17, r1
+		SPI_ReadWriteByte(buf[i]);
+ 1f8:	89 91       	ld	r24, Y+
+ 1fa:	0e 94 5b 01 	call	0x2b6	; 0x2b6 <SPI_ReadWriteByte>
+	_delay_us(135);
+}
+void NRF_WritePLD(uint8_t *buf,uint8_t size){
+	cleBit(PORTB,CSN);
+	SPI_ReadWriteByte(W_TX_PAYLOAD);
+	for(int i=0; i<size;i++){
+ 1fe:	c0 17       	cp	r28, r16
+ 200:	d1 07       	cpc	r29, r17
+ 202:	d1 f7       	brne	.-12     	; 0x1f8 <NRF_WritePLD+0x20>
+		SPI_ReadWriteByte(buf[i]);
+	}
+	setBit(PORTB,CSN);
+ 204:	c4 9a       	sbi	0x18, 4	; 24
+}
+ 206:	df 91       	pop	r29
+ 208:	cf 91       	pop	r28
+ 20a:	1f 91       	pop	r17
+ 20c:	0f 91       	pop	r16
+ 20e:	ff 90       	pop	r15
+ 210:	08 95       	ret
+
+00000212 <NRF_WriteData>:
+void NRF_WriteData(){
+ 212:	cf 93       	push	r28
+ 214:	df 93       	push	r29
+ 216:	1f 92       	push	r1
+ 218:	cd b7       	in	r28, 0x3d	; 61
+ 21a:	de b7       	in	r29, 0x3e	; 62
+	uint8_t status=0;
+ 21c:	19 82       	std	Y+1, r1	; 0x01
+	setBit(PORTB,CE);
+ 21e:	c3 9a       	sbi	0x18, 3	; 24
+ 220:	85 e0       	ldi	r24, 0x05	; 5
+ 222:	8a 95       	dec	r24
+ 224:	f1 f7       	brne	.-4      	; 0x222 <NRF_WriteData+0x10>
+	_delay_us(15);
+	NRF_ReadReg(STATUS,&status,1);
+ 226:	41 e0       	ldi	r20, 0x01	; 1
+ 228:	be 01       	movw	r22, r28
+ 22a:	6f 5f       	subi	r22, 0xFF	; 255
+ 22c:	7f 4f       	sbci	r23, 0xFF	; 255
+ 22e:	87 e0       	ldi	r24, 0x07	; 7
+ 230:	0e 94 5b 00 	call	0xb6	; 0xb6 <NRF_ReadReg>
+	while(!(status&(1<<5)))
+ 234:	89 81       	ldd	r24, Y+1	; 0x01
+ 236:	85 fd       	sbrc	r24, 5
+ 238:	0a c0       	rjmp	.+20     	; 0x24e <NRF_WriteData+0x3c>
+	{
+		NRF_ReadReg(STATUS,&status,1);
+ 23a:	41 e0       	ldi	r20, 0x01	; 1
+ 23c:	be 01       	movw	r22, r28
+ 23e:	6f 5f       	subi	r22, 0xFF	; 255
+ 240:	7f 4f       	sbci	r23, 0xFF	; 255
+ 242:	87 e0       	ldi	r24, 0x07	; 7
+ 244:	0e 94 5b 00 	call	0xb6	; 0xb6 <NRF_ReadReg>
+void NRF_WriteData(){
+	uint8_t status=0;
+	setBit(PORTB,CE);
+	_delay_us(15);
+	NRF_ReadReg(STATUS,&status,1);
+	while(!(status&(1<<5)))
+ 248:	89 81       	ldd	r24, Y+1	; 0x01
+ 24a:	85 ff       	sbrs	r24, 5
+ 24c:	f6 cf       	rjmp	.-20     	; 0x23a <NRF_WriteData+0x28>
+	{
+		NRF_ReadReg(STATUS,&status,1);
+	}
+	NRF_WriteReg(STATUS,&status,1);
+ 24e:	41 e0       	ldi	r20, 0x01	; 1
+ 250:	be 01       	movw	r22, r28
+ 252:	6f 5f       	subi	r22, 0xFF	; 255
+ 254:	7f 4f       	sbci	r23, 0xFF	; 255
+ 256:	87 e0       	ldi	r24, 0x07	; 7
+ 258:	0e 94 78 00 	call	0xf0	; 0xf0 <NRF_WriteReg>
+	cleBit(PORTB,CE);
+ 25c:	c3 98       	cbi	0x18, 3	; 24
+}
+ 25e:	0f 90       	pop	r0
+ 260:	df 91       	pop	r29
+ 262:	cf 91       	pop	r28
+ 264:	08 95       	ret
+
+00000266 <NRF_OpenPipe>:
+void NRF_OpenPipe(uint8_t pipe,uint8_t width){
+ 266:	cf 93       	push	r28
+ 268:	df 93       	push	r29
+ 26a:	1f 92       	push	r1
+ 26c:	cd b7       	in	r28, 0x3d	; 61
+ 26e:	de b7       	in	r29, 0x3e	; 62
+	uint8_t size=width;
+ 270:	69 83       	std	Y+1, r22	; 0x01
+	NRF_WriteReg(RX_PW_P0+pipe,&size,1);
+ 272:	41 e0       	ldi	r20, 0x01	; 1
+ 274:	be 01       	movw	r22, r28
+ 276:	6f 5f       	subi	r22, 0xFF	; 255
+ 278:	7f 4f       	sbci	r23, 0xFF	; 255
+ 27a:	8f 5e       	subi	r24, 0xEF	; 239
+ 27c:	0e 94 78 00 	call	0xf0	; 0xf0 <NRF_WriteReg>
+ 280:	0f 90       	pop	r0
+ 282:	df 91       	pop	r29
+ 284:	cf 91       	pop	r28
+ 286:	08 95       	ret
+
+00000288 <SPI_Init>:
 	
 }
 uint8_t SPI_ReadByte(void){
 	while(!(SPSR&(1<<SPIF))){}
 		return SPDR;
 }
- 14c:	21 e0       	ldi	r18, 0x01	; 1
- 14e:	30 e0       	ldi	r19, 0x00	; 0
- 150:	a9 01       	movw	r20, r18
- 152:	02 c0       	rjmp	.+4      	; 0x158 <SPI_Init+0xc>
- 154:	44 0f       	add	r20, r20
- 156:	55 1f       	adc	r21, r21
- 158:	6a 95       	dec	r22
- 15a:	e2 f7       	brpl	.-8      	; 0x154 <SPI_Init+0x8>
- 15c:	94 2f       	mov	r25, r20
- 15e:	90 6a       	ori	r25, 0xA0	; 160
- 160:	02 c0       	rjmp	.+4      	; 0x166 <SPI_Init+0x1a>
- 162:	22 0f       	add	r18, r18
- 164:	33 1f       	adc	r19, r19
- 166:	8a 95       	dec	r24
- 168:	e2 f7       	brpl	.-8      	; 0x162 <SPI_Init+0x16>
- 16a:	29 2b       	or	r18, r25
- 16c:	27 bb       	out	0x17, r18	; 23
- 16e:	88 b3       	in	r24, 0x18	; 24
- 170:	48 2b       	or	r20, r24
- 172:	48 bb       	out	0x18, r20	; 24
- 174:	83 e5       	ldi	r24, 0x53	; 83
- 176:	8d b9       	out	0x0d, r24	; 13
- 178:	08 95       	ret
+ 288:	21 e0       	ldi	r18, 0x01	; 1
+ 28a:	30 e0       	ldi	r19, 0x00	; 0
+ 28c:	a9 01       	movw	r20, r18
+ 28e:	02 c0       	rjmp	.+4      	; 0x294 <SPI_Init+0xc>
+ 290:	44 0f       	add	r20, r20
+ 292:	55 1f       	adc	r21, r21
+ 294:	6a 95       	dec	r22
+ 296:	e2 f7       	brpl	.-8      	; 0x290 <SPI_Init+0x8>
+ 298:	94 2f       	mov	r25, r20
+ 29a:	90 6a       	ori	r25, 0xA0	; 160
+ 29c:	02 c0       	rjmp	.+4      	; 0x2a2 <SPI_Init+0x1a>
+ 29e:	22 0f       	add	r18, r18
+ 2a0:	33 1f       	adc	r19, r19
+ 2a2:	8a 95       	dec	r24
+ 2a4:	e2 f7       	brpl	.-8      	; 0x29e <SPI_Init+0x16>
+ 2a6:	29 2b       	or	r18, r25
+ 2a8:	27 bb       	out	0x17, r18	; 23
+ 2aa:	88 b3       	in	r24, 0x18	; 24
+ 2ac:	48 2b       	or	r20, r24
+ 2ae:	48 bb       	out	0x18, r20	; 24
+ 2b0:	83 e5       	ldi	r24, 0x53	; 83
+ 2b2:	8d b9       	out	0x0d, r24	; 13
+ 2b4:	08 95       	ret
 
-0000017a <SPI_ReadWriteByte>:
+000002b6 <SPI_ReadWriteByte>:
 uint8_t SPI_ReadWriteByte(uint8_t data){
 	//uint8_t empty=0;
 	SPDR=data;
- 17a:	8f b9       	out	0x0f, r24	; 15
+ 2b6:	8f b9       	out	0x0f, r24	; 15
 	while(!(SPSR&(1<<SPIF))){}
- 17c:	77 9b       	sbis	0x0e, 7	; 14
- 17e:	fe cf       	rjmp	.-4      	; 0x17c <SPI_ReadWriteByte+0x2>
+ 2b8:	77 9b       	sbis	0x0e, 7	; 14
+ 2ba:	fe cf       	rjmp	.-4      	; 0x2b8 <SPI_ReadWriteByte+0x2>
 	return SPDR;	
- 180:	8f b1       	in	r24, 0x0f	; 15
- 182:	08 95       	ret
+ 2bc:	8f b1       	in	r24, 0x0f	; 15
+ 2be:	08 95       	ret
 
-00000184 <_exit>:
- 184:	f8 94       	cli
+000002c0 <_exit>:
+ 2c0:	f8 94       	cli
 
-00000186 <__stop_program>:
- 186:	ff cf       	rjmp	.-2      	; 0x186 <__stop_program>
+000002c2 <__stop_program>:
+ 2c2:	ff cf       	rjmp	.-2      	; 0x2c2 <__stop_program>
