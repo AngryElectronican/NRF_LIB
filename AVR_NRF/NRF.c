@@ -85,3 +85,7 @@ void NRF_OpenPipe(uint8_t pipe,uint8_t width){
 	uint8_t size=width;
 	NRF_WriteReg(RX_PW_P0+pipe,&size,1);
 }
+void NRF_ResetRetransmitCounter(){
+	uint8_t status=0b00010000;
+	NRF_WriteReg(STATUS,&status,1);
+}
