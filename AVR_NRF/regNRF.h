@@ -9,6 +9,10 @@
 #ifndef REGNRF_H_
 #define REGNRF_H_
 
+#define bool unsigned char
+#define TRUE 1
+#define FALSE 0
+
 //**********Registers**********//
 enum{
     CONFIG  = 0x00,
@@ -38,13 +42,13 @@ enum{
 	};
 	//CONFIG
 	//Reserved 7
-	#define MASK_RX_DR 6
-	#define MASK_TX_DS 5
+	#define MASK_RX_DR	6
+	#define MASK_TX_DS	5
 	#define MASK_MAX_RT 4
-	#define EN_CRC 3
-	#define CRCO 2
-	#define PWR_UP 1
-	#define PRIM_RX 0
+	#define EN_CRC		3
+	#define CRCO		2
+	#define PWR_UP		1
+	#define PRIM_RX		0
 	
 	//EN_AA
 	//Reserved 7
@@ -65,6 +69,17 @@ enum{
 	#define ERX_P2 2
 	#define ERX_P1 1
 	#define ERX_P0 0
+	
+	//STATUS
+	//Reserved
+	#define RX_DR		6
+	#define TX_DS		5
+	#define MAX_RT		4
+	#define RX_P_NO_2	3
+	#define RX_P_NO_1	2
+	#define RX_P_NO_0	1
+	#define TX_FULL		0
+	
 	
 	//**********COMANDS**********//
 	#define R_REGISTER			0x00

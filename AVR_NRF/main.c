@@ -7,9 +7,8 @@
 
 #include <avr/io.h>
 //#include "spi.h"
+#define F_CPU 8000000UL
 #include "NRF.h"
-#include <util/delay.h>
-
 
 int main(void)
 {
@@ -19,18 +18,23 @@ int main(void)
 	NRF_Init();
 	NRF_OpenPipe(0,1);
 	NRF_PowerOn();
-	NRF_TransmitMode();
+	NRF_ReceiveMode();
+	/*NRF_TransmitMode();
 	NRF_WritePLD(transmit,1);
 	NRF_WriteData();
 	NRF_ReadReg(STATUS,&data,1);
-	PORTA=data;
+	PORTA=data;*/
     while (1) 
     {
-		//NRF_TransmitMode();
-		//NRF_WritePLD(transmit,1);
-		//NRF_WriteData();
-		//NRF_ReceiveMode();
+		/*NRF_TransmitMode();
+		NRF_WritePLD(transmit,1);
+		NRF_WriteData();*/
 		
+		/*NRF_ResetRetransmitCounter();*/
+		if(NRF_DataAvailable()){
+			NRF_ReadPLD(&data,1);
+		}
+		PORTA=data;
 		
     }
 }
