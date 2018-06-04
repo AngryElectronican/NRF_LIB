@@ -37,6 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../gpio.c \
 ../main.c \
 ../NRF.c \
 ../spi.c
@@ -49,21 +50,25 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+gpio.o \
 main.o \
 NRF.o \
 spi.o
 
 OBJS_AS_ARGS +=  \
+gpio.o \
 main.o \
 NRF.o \
 spi.o
 
 C_DEPS +=  \
+gpio.d \
 main.d \
 NRF.d \
 spi.d
 
 C_DEPS_AS_ARGS +=  \
+gpio.d \
 main.d \
 NRF.d \
 spi.d
@@ -82,6 +87,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

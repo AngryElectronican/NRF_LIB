@@ -13,7 +13,7 @@ NRF.d NRF.o: .././NRF.c .././NRF.h \
  c:\program\ files\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\version.h \
  c:\program\ files\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
- .././regNRF.h .././spi.h
+ .././regNRF.h .././gpio.h .././spi.h
 
 .././NRF.h:
 
@@ -46,5 +46,7 @@ c:\program\ files\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include
 c:\program\ files\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h:
 
 .././regNRF.h:
+
+.././gpio.h:
 
 .././spi.h:

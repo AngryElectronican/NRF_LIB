@@ -9,10 +9,6 @@
 #ifndef REGNRF_H_
 #define REGNRF_H_
 
-#define bool unsigned char
-#define TRUE 1
-#define FALSE 0
-
 //**********Registers**********//
 enum{
     CONFIG  = 0x00,
